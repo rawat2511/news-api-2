@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>News App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+            font-family: 'Roboto', sans-serif;
+        }
+        #container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .card, .nav {
+            width: 96%;
+            margin: 20px auto;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid black;
+        }
+        .image {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .title {
+            font-family: 'Nunito Sans', sans-serif;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .author {
+            color: #35144f;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .date {
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .image {
+            margin-bottom: 20px;
+        }
+        .content {
+            font-size: 120%;
+            font-weight: 100;
+            line-height: 1.4;
+        }
+        ul {
+            display: flex;
+            list-style-type: none;
+        }
+        li {
+            flex-grow: 1;
+            text-align: center;
+            border: 1px solid black;
+            border-radius: 4px;
+            /* padding: 6px 0px; */
+            margin: 0px 10px;
+            cursor: pointer;
+            display: flex;
+        }
+        a {
+            border: 1px solid black;
+            flex-grow: 1;
+            border-radius: 4px;
+            padding: 6px 0px;
+            /* margin: 0px 10px; */
+            cursor: pointer;
+            text-decoration: none;
+        }
+        a:hover {
+            font-size: 18px;
+            background-color: lightgreen;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="nav">
+            <ul>
+                <li><a href="sports.html" target="_blank">Sports</a></li>
+                <li><a href="entertainment.html" target="_blank">Entertainment</a></li>
+                <li><a href="technology.html" target="_blank">Technology</a></li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        // window.addEventListener("load", loadNews);
+        function onload(){
+            var container = document.getElementById("container");
+            var url = "https://newsapi.org/v2/top-headlines?category=sports&apiKey=d263154163754ae098cab0e7c48ee242";
+
+            console.log();
+            var req = new Request(url);
+
+            fetch(req)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(res){
+                // title, author, content, description, publishedAt, urlToImage, source(id, name)
+                var news = res.articles;
+
+                console.log(news);
+                var i = 0, j = 0;
+                while( i < 10){
+                    if( news[j].author === null || news[j].publishedAt === null || news[j].title === null || news[j].urlToImage === null || news[j].content){
+                        j++;
+                        continue;
+                    }
+                    i++;
+                    var card = document.createElement("div");
+                    card.className = "card";
+
+                    var title = document.createElement("h1");
+                    title.textContent = news[i].title;
+                    title.className = "title";
+                    card.appendChild(title);
+
+                    var author = document.createElement("p");
+                    author.className = "author";
+                    author.textContent = news[i].author;
+                    card.appendChild(author);
+
+                    var date = document.createElement("p");
+                    date.className = "date";
+                    date.textContent = news[i].publishedAt.split("T")[0];
+                    card.appendChild(date);
+
+                    var img = document.createElement("img");
+                    img.src = news[i].urlToImage;
+                    img.className = "image";
+                    card.appendChild(img);
+                    
+                    var cont = news[i].content.split("[");
+
+                    var content = document.createElement("p");
+                    content.className = "content";
+                    var para = cont[0];
+                    var span = "[" + cont[1];
+                    content.innerHTML = `${para} <a href="${news[i].url}">${span}</a>`;
+                    
+                    card.appendChild(content);
+
+                    container.appendChild(card);
+                }
+            })
+        }
+
+        onload();
+    </script>
+</body>
+</html>
